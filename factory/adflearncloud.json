@@ -1,0 +1,9 @@
+{
+	"name": "adflearncloud",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "07b38f37-096a-473e-99b7-27f7b9a4d5d3",
+		"tenantId": "e0472950-72a7-456f-9ef1-23c644042bfd"
+	}
+}

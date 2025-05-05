@@ -1,0 +1,432 @@
+{
+	"name": "pram_source_alli_blob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "blobstoragesource",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Alli"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"container": "source-alli"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "S.No",
+				"type": "String"
+			},
+			{
+				"name": "SourceDB",
+				"type": "String"
+			},
+			{
+				"name": "Division",
+				"type": "String"
+			},
+			{
+				"name": "DIVISION_NAME",
+				"type": "String"
+			},
+			{
+				"name": "ServicerCd",
+				"type": "String"
+			},
+			{
+				"name": "ServicerName",
+				"type": "String"
+			},
+			{
+				"name": "ClientCd",
+				"type": "String"
+			},
+			{
+				"name": "ClientName",
+				"type": "String"
+			},
+			{
+				"name": "ClientState",
+				"type": "String"
+			},
+			{
+				"name": "Client/SICs",
+				"type": "String"
+			},
+			{
+				"name": "DepartmentCd",
+				"type": "String"
+			},
+			{
+				"name": "DepartmentName",
+				"type": "String"
+			},
+			{
+				"name": "ProducerCd",
+				"type": "String"
+			},
+			{
+				"name": "ProducerName",
+				"type": "String"
+			},
+			{
+				"name": "InsurerCd",
+				"type": "String"
+			},
+			{
+				"name": "InsurerName",
+				"type": "String"
+			},
+			{
+				"name": "NAICCD",
+				"type": "String"
+			},
+			{
+				"name": "BILLTYPECD",
+				"type": "String"
+			},
+			{
+				"name": "PolicyNumber",
+				"type": "String"
+			},
+			{
+				"name": "MajorLOB",
+				"type": "String"
+			},
+			{
+				"name": "PolicyExpirationDt",
+				"type": "String"
+			},
+			{
+				"name": "AnnAgtPrem",
+				"type": "String"
+			},
+			{
+				"name": "AnnCommPct",
+				"type": "String"
+			},
+			{
+				"name": "AnnAgtComm",
+				"type": "String"
+			},
+			{
+				"name": "CanNonrenewRenewInd",
+				"type": "String"
+			},
+			{
+				"name": "POLCNRDATE",
+				"type": "String"
+			},
+			{
+				"name": "Can_Code",
+				"type": "String"
+			},
+			{
+				"name": "Can_Desc",
+				"type": "String"
+			},
+			{
+				"name": "CANCELMETHOD",
+				"type": "String"
+			},
+			{
+				"name": "POLICYSTATUS",
+				"type": "String"
+			},
+			{
+				"name": "POLEFFDATE",
+				"type": "String"
+			},
+			{
+				"name": "POLCANDATE",
+				"type": "String"
+			},
+			{
+				"name": "POLLASTENTRYDT",
+				"type": "String"
+			},
+			{
+				"name": "POLORIGINCEPT",
+				"type": "String"
+			},
+			{
+				"name": "POLWRITTENPRODCOMM",
+				"type": "String"
+			},
+			{
+				"name": "SUBCOVER",
+				"type": "String"
+			},
+			{
+				"name": "PROSPECTCLIENT",
+				"type": "String"
+			},
+			{
+				"name": "PayeeId",
+				"type": "String"
+			},
+			{
+				"name": "PayeeName",
+				"type": "String"
+			},
+			{
+				"name": "RM_INTERMEDIARY",
+				"type": "String"
+			},
+			{
+				"name": "PREFERRED_IND",
+				"type": "String"
+			},
+			{
+				"name": "ReferralType",
+				"type": "String"
+			},
+			{
+				"name": "ReferralName",
+				"type": "String"
+			},
+			{
+				"name": "Policies_ID43",
+				"type": "String"
+			},
+			{
+				"name": "Bill_INV_AMT",
+				"type": "String"
+			},
+			{
+				"name": "Bill_Producer_Amt",
+				"type": "String"
+			},
+			{
+				"name": "Bill_AgencyAmt",
+				"type": "String"
+			},
+			{
+				"name": "ServicerEmail",
+				"type": "String"
+			},
+			{
+				"name": "ProducerEmail",
+				"type": "String"
+			},
+			{
+				"name": "Term_In_Years",
+				"type": "String"
+			},
+			{
+				"name": "Estimated_premium",
+				"type": "String"
+			},
+			{
+				"name": "Estimated_Commission",
+				"type": "String"
+			},
+			{
+				"name": "NATUREOFBUSINESS",
+				"type": "String"
+			},
+			{
+				"name": "PREVPOLICYID",
+				"type": "String"
+			},
+			{
+				"name": "NEXTPOLICYID",
+				"type": "String"
+			},
+			{
+				"name": "Region",
+				"type": "String"
+			},
+			{
+				"name": "Territory",
+				"type": "String"
+			},
+			{
+				"name": "Office",
+				"type": "String"
+			},
+			{
+				"name": "Coverage code",
+				"type": "String"
+			},
+			{
+				"name": "Coverage Description ",
+				"type": "String"
+			},
+			{
+				"name": "Product",
+				"type": "String"
+			},
+			{
+				"name": "Product group",
+				"type": "String"
+			},
+			{
+				"name": "Product segment",
+				"type": "String"
+			},
+			{
+				"name": "Policies_ID63",
+				"type": "String"
+			},
+			{
+				"name": "flag",
+				"type": "String"
+			},
+			{
+				"name": "Loss_ID",
+				"type": "String"
+			},
+			{
+				"name": "Claim_ID",
+				"type": "String"
+			},
+			{
+				"name": "LOSS_DATE",
+				"type": "String"
+			},
+			{
+				"name": "LOSS_REPORT_DATE",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Paid_date",
+				"type": "String"
+			},
+			{
+				"name": "CLAIM_CLOSURE_DATE",
+				"type": "String"
+			},
+			{
+				"name": "Claim_Servicer_Name",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Status",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Type_Desc ",
+				"type": "String"
+			},
+			{
+				"name": "Claimant_Name",
+				"type": "String"
+			},
+			{
+				"name": "Claimant_Code",
+				"type": "String"
+			},
+			{
+				"name": "Loss_desc_ID",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Description",
+				"type": "String"
+			},
+			{
+				"name": "Loss_location",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Revenue_Amt",
+				"type": "String"
+			},
+			{
+				"name": "Prop_80",
+				"type": "String"
+			},
+			{
+				"name": "Estimated_Loss_Amt",
+				"type": "String"
+			},
+			{
+				"name": "Loss_Amount_Paid",
+				"type": "String"
+			},
+			{
+				"name": "Top_insurer",
+				"type": "String"
+			},
+			{
+				"name": "DateKey",
+				"type": "String"
+			},
+			{
+				"name": "FullDateAlternateKey",
+				"type": "String"
+			},
+			{
+				"name": "DateString",
+				"type": "String"
+			},
+			{
+				"name": "DayOfWeek",
+				"type": "String"
+			},
+			{
+				"name": "DayOfWeekName",
+				"type": "String"
+			},
+			{
+				"name": "DayOfMonth",
+				"type": "String"
+			},
+			{
+				"name": "DayOfYear",
+				"type": "String"
+			},
+			{
+				"name": "WeekOfYear",
+				"type": "String"
+			},
+			{
+				"name": "MonthName",
+				"type": "String"
+			},
+			{
+				"name": "MonthOfYear",
+				"type": "String"
+			},
+			{
+				"name": "CalendarQuarter",
+				"type": "String"
+			},
+			{
+				"name": "CalendarYear",
+				"type": "String"
+			},
+			{
+				"name": "IsWeekend",
+				"type": "String"
+			},
+			{
+				"name": "IsLeapYear",
+				"type": "String"
+			},
+			{
+				"name": "PolicyEnddate",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

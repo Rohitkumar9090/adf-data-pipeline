@@ -1,0 +1,24 @@
+{
+	"name": "blob_add_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_AutoBlobFileMover",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/source/blobs/",
+			"ignoreEmptyBlobs": false,
+			"scope": "/subscriptions/06e7a911-b158-4957-92c0-cfacead21ccb/resourceGroups/ADF-RG/providers/Microsoft.Storage/storageAccounts/mydatastoreadf",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

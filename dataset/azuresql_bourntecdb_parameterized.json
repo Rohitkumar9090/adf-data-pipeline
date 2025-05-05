@@ -1,0 +1,31 @@
+{
+	"name": "azuresql_bourntecdb_parameterized",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "azuresqldatabaselinked",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbname": "rohit_db"
+			}
+		},
+		"parameters": {
+			"tbname": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Rohit_dataset"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().tbname",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

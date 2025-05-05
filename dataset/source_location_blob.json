@@ -1,0 +1,123 @@
+{
+	"name": "source_location_blob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "blobstoragesource",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Alli"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "source"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Customer",
+				"type": "String"
+			},
+			{
+				"name": "State",
+				"type": "String"
+			},
+			{
+				"name": "Customer Lifetime Value",
+				"type": "String"
+			},
+			{
+				"name": "Response",
+				"type": "String"
+			},
+			{
+				"name": "Coverage",
+				"type": "String"
+			},
+			{
+				"name": "Education",
+				"type": "String"
+			},
+			{
+				"name": "Effective To Date",
+				"type": "String"
+			},
+			{
+				"name": "EmploymentStatus",
+				"type": "String"
+			},
+			{
+				"name": "Gender",
+				"type": "String"
+			},
+			{
+				"name": "Income",
+				"type": "String"
+			},
+			{
+				"name": "Location Code",
+				"type": "String"
+			},
+			{
+				"name": "Marital Status",
+				"type": "String"
+			},
+			{
+				"name": "Monthly Premium Auto",
+				"type": "String"
+			},
+			{
+				"name": "Months Since Last Claim",
+				"type": "String"
+			},
+			{
+				"name": "Months Since Policy Inception",
+				"type": "String"
+			},
+			{
+				"name": "Number of Open Complaints",
+				"type": "String"
+			},
+			{
+				"name": "Number of Policies",
+				"type": "String"
+			},
+			{
+				"name": "Policy Type",
+				"type": "String"
+			},
+			{
+				"name": "Policy",
+				"type": "String"
+			},
+			{
+				"name": "Renew Offer Type",
+				"type": "String"
+			},
+			{
+				"name": "Sales Channel",
+				"type": "String"
+			},
+			{
+				"name": "Total Claim Amount",
+				"type": "String"
+			},
+			{
+				"name": "Vehicle Class",
+				"type": "String"
+			},
+			{
+				"name": "Vehicle Size",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

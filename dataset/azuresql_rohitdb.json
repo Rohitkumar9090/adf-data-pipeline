@@ -1,0 +1,23 @@
+{
+	"name": "azuresql_rohitdb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "azuresqldatabaselinked",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbname": "rohit_db"
+			}
+		},
+		"folder": {
+			"name": "Rohit_dataset"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Data_bike"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
