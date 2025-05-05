@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "Copy_zipFileData",
+					"referenceName": "PL_Copy_zipFileData",
 					"type": "PipelineReference"
 				}
 			}
