@@ -23,7 +23,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "File Information",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -170,7 +170,7 @@
 				}
 			},
 			{
-				"name": "Get Metadata1",
+				"name": "File Information",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
