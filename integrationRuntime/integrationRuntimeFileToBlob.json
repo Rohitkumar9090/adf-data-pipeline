@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeFileToBlob",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
