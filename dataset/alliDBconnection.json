@@ -5,7 +5,7 @@
 			"referenceName": "azuresqldatabaselinked",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"dbname": "alliDB"
+				"dbname": "rohit_db"
 			}
 		},
 		"parameters": {
