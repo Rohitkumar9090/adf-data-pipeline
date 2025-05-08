@@ -1,5 +1,5 @@
 {
-	"name": "PL_Copy_zipFileData",
+	"name": "PL_ZipToUnzip_file",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "source_location_blob",
+						"referenceName": "Source_alli_blob",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -52,18 +52,18 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "If Condition1",
+							"name": "If Condition2",
 							"type": "IfCondition",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(item().name,'.zip' )",
+									"value": "@contains(item().name,'.zip')",
 									"type": "Expression"
 								},
-								"ifFalseActivities": [
+								"ifTrueActivities": [
 									{
-										"name": "Copy data2",
+										"name": "Copy data1_copy1",
 										"type": "Copy",
 										"dependsOn": [],
 										"policy": {
@@ -83,7 +83,11 @@
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
-													"type": "DelimitedTextReadSettings"
+													"type": "DelimitedTextReadSettings",
+													"compressionProperties": {
+														"type": "ZipDeflateReadSettings",
+														"preserveZipFileNameAsFolder": false
+													}
 												}
 											},
 											"sink": {
@@ -109,10 +113,10 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "Parame_source_loc",
+												"referenceName": "param_zip_source_alli_blob",
 												"type": "DatasetReference",
 												"parameters": {
-													"file_name": {
+													"File_Name": {
 														"value": "@item().name",
 														"type": "Expression"
 													}
@@ -121,17 +125,22 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "sink_blob",
+												"referenceName": "Source_alli_blob",
 												"type": "DatasetReference"
 											}
 										]
-									}
-								],
-								"ifTrueActivities": [
+									},
 									{
-										"name": "Copy data1",
-										"type": "Copy",
-										"dependsOn": [],
+										"name": "Delete1",
+										"type": "Delete",
+										"dependsOn": [
+											{
+												"activity": "Copy data1_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
 										"policy": {
 											"timeout": "0.12:00:00",
 											"retry": 0,
@@ -141,45 +150,8 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"source": {
-												"type": "DelimitedTextSource",
-												"storeSettings": {
-													"type": "AzureBlobStorageReadSettings",
-													"recursive": true,
-													"enablePartitionDiscovery": false
-												},
-												"formatSettings": {
-													"type": "DelimitedTextReadSettings",
-													"compressionProperties": {
-														"type": "ZipDeflateReadSettings"
-													}
-												}
-											},
-											"sink": {
-												"type": "DelimitedTextSink",
-												"storeSettings": {
-													"type": "AzureBlobStorageWriteSettings",
-													"copyBehavior": "MergeFiles"
-												},
-												"formatSettings": {
-													"type": "DelimitedTextWriteSettings",
-													"quoteAllText": true,
-													"fileExtension": ".txt"
-												}
-											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
-										},
-										"inputs": [
-											{
-												"referenceName": "source_zip_location",
+											"dataset": {
+												"referenceName": "param_soure_alli_blob",
 												"type": "DatasetReference",
 												"parameters": {
 													"Filename": {
@@ -187,20 +159,14 @@
 														"type": "Expression"
 													}
 												}
+											},
+											"enableLogging": false,
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
 											}
-										],
-										"outputs": [
-											{
-												"referenceName": "zip_target",
-												"type": "DatasetReference",
-												"parameters": {
-													"Filename": {
-														"value": "@replace(item().name, '.zip', '.csv')\n",
-														"type": "Expression"
-													}
-												}
-											}
-										]
+										}
 									}
 								]
 							}
@@ -209,6 +175,17 @@
 				}
 			}
 		],
+		"variables": {
+			"Set Table Name": {
+				"type": "String"
+			},
+			"Error File Type": {
+				"type": "String"
+			},
+			"Archieve FIle Path": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Alli Pipeline"
 		},

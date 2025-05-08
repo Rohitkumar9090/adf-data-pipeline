@@ -1,11 +1,18 @@
 {
-	"name": "Copy_zipFileData_intoSQL",
+	"name": "PL_Copy_zipFileData_intoSQL",
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "Get Information about source",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Unzip FIle",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -37,7 +44,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Get Information about source",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -46,7 +53,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('Get Information about source').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -58,16 +65,113 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(item().name,'.zip' )",
+									"value": "@or(\n    contains(item().name, '.csv'),\n    or(\n        contains(item().name, '.xlsx'),\n        contains(item().name, '.xls')\n    )\n)\n",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
 									{
-										"name": "Copy data2",
+										"name": "Copy into Error file Location",
 										"type": "Copy",
 										"dependsOn": [
 											{
-												"activity": "Table_name set2",
+												"activity": "Set Error File Path",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "param_soure_alli_blob",
+												"type": "DatasetReference",
+												"parameters": {
+													"Filename": {
+														"value": "@item().name\n",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_Blob",
+												"type": "DatasetReference",
+												"parameters": {
+													"Container_name": "error-file-type",
+													"FileName": {
+														"value": "@variables('Error File Type')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Set Error File Path",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Error File Type",
+											"value": {
+												"value": "@concat(formatDateTime(utcNow(), 'dd-MM-yyyy'), '/', item().name)\n",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Copy into source to sql",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Table_name set",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -116,10 +220,10 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "pram_source_alli_blob",
+												"referenceName": "param_soure_alli_blob",
 												"type": "DatasetReference",
 												"parameters": {
-													"FileName": {
+													"Filename": {
 														"value": "@item().name",
 														"type": "Expression"
 													}
@@ -132,7 +236,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"Table_name": {
-														"value": "@variables('SetTable name')",
+														"value": "@concat('Stg_',variables('SetTable name'))",
 														"type": "Expression"
 													}
 												}
@@ -140,7 +244,7 @@
 										]
 									},
 									{
-										"name": "Table_name set2",
+										"name": "Table_name set",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -151,19 +255,23 @@
 										"typeProperties": {
 											"variableName": "SetTable name",
 											"value": {
-												"value": "@replace(replace(item().name, ' ', '_'), '.zip', '')\n",
+												"value": "@replace(split(item().name, '.')[0], ' ', '_')\n",
 												"type": "Expression"
 											}
 										}
-									}
-								],
-								"ifTrueActivities": [
+									},
 									{
-										"name": "Copy data1",
+										"name": "Copy into archive folder",
 										"type": "Copy",
 										"dependsOn": [
 											{
-												"activity": "Table_name set",
+												"activity": "Archive File Path set",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											},
+											{
+												"activity": "Copy into source to sql",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -186,22 +294,19 @@
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {
-													"type": "DelimitedTextReadSettings",
-													"compressionProperties": {
-														"type": "ZipDeflateReadSettings"
-													}
+													"type": "DelimitedTextReadSettings"
 												}
 											},
 											"sink": {
-												"type": "AzureSqlSink",
-												"preCopyScript": {
-													"value": "drop table if exists @{variables('SetTable name')}",
-													"type": "Expression"
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
 												},
-												"writeBehavior": "insert",
-												"sqlWriterUseTableLock": false,
-												"tableOption": "autoCreate",
-												"disableMetricsCollection": false
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
 											},
 											"enableStaging": false,
 											"translator": {
@@ -215,10 +320,10 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "param_zip_source_alli_blob",
+												"referenceName": "param_soure_alli_blob",
 												"type": "DatasetReference",
 												"parameters": {
-													"File_Name": {
+													"Filename": {
 														"value": "@item().name",
 														"type": "Expression"
 													}
@@ -227,11 +332,12 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "alliDBconnection",
+												"referenceName": "ds_Blob",
 												"type": "DatasetReference",
 												"parameters": {
-													"Table_name": {
-														"value": "@variables('SetTable name')",
+													"Container_name": "backup-file",
+													"FileName": {
+														"value": "@variables('Archieve FIle Path')",
 														"type": "Expression"
 													}
 												}
@@ -239,7 +345,7 @@
 										]
 									},
 									{
-										"name": "Table_name set",
+										"name": "Archive File Path set",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -248,17 +354,208 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"variableName": "SetTable name",
+											"variableName": "Archieve FIle Path",
+											"value": "@concat(formatDateTime(utcNow(), 'dd-MM-yyyy'), '/', item().name)\n"
+										}
+									},
+									{
+										"name": "Copy into Error file Location Sql Load Fail",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Set Error File Path Sql Load Fail",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".txt"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "param_soure_alli_blob",
+												"type": "DatasetReference",
+												"parameters": {
+													"Filename": {
+														"value": "@item().name\n",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_Blob",
+												"type": "DatasetReference",
+												"parameters": {
+													"Container_name": "error-file-type",
+													"FileName": {
+														"value": "@variables('Error File Type')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Set Error File Path Sql Load Fail",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Copy into source to sql",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Error File Type",
 											"value": {
-												"value": "@replace(replace(item().name, ' ', '_'), '.zip', '')\n",
+												"value": "@concat(formatDateTime(utcNow(), 'dd-MM-yyyy'), '/', item().name)\n",
 												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Delete file due to sql load fail",
+										"type": "Delete",
+										"dependsOn": [
+											{
+												"activity": "Copy into Error file Location Sql Load Fail",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"dataset": {
+												"referenceName": "param_soure_alli_blob",
+												"type": "DatasetReference",
+												"parameters": {
+													"Filename": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											},
+											"enableLogging": false,
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
 											}
 										}
 									}
 								]
 							}
+						},
+						{
+							"name": "Delete Source File",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "If Condition1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "param_soure_alli_blob",
+									"type": "DatasetReference",
+									"parameters": {
+										"Filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Unzip FIle",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_ZipToUnzip_file",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
@@ -267,6 +564,15 @@
 				"type": "String"
 			},
 			"Archive Location": {
+				"type": "String"
+			},
+			"Set Table Name": {
+				"type": "String"
+			},
+			"Error File Type": {
+				"type": "String"
+			},
+			"Archieve FIle Path": {
 				"type": "String"
 			}
 		},

@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PL_Copy_zipFileData",
+					"referenceName": "PL_ZipToUnzip_file",
 					"type": "PipelineReference"
 				}
 			}
