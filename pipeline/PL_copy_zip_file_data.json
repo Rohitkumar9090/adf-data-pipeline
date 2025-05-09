@@ -171,7 +171,7 @@
 										],
 										"outputs": [
 											{
-												"referenceName": "Binary6",
+												"referenceName": "Binary4",
 												"type": "DatasetReference"
 											}
 										]
